@@ -1,0 +1,81 @@
+{
+  "AttributeDefinitions": [
+    {
+      "AttributeName": "ID",
+      "AttributeType": "S"
+    },
+    {
+      "AttributeName": "flag",
+      "AttributeType": "S"
+    },
+    {
+      "AttributeName": "notifyToken",
+      "AttributeType": "S"
+    },
+    {
+      "AttributeName": "uuid",
+      "AttributeType": "S"
+    }
+  ],
+  "TableName": "TimeTable",
+  "KeySchema": [
+    {
+      "AttributeName": "ID",
+      "KeyType": "HASH"
+    }
+  ],
+  "GlobalSecondaryIndexes": [
+    {
+      "IndexName": "notifyToken-index",
+      "KeySchema": [
+        {
+          "AttributeName": "notifyToken",
+          "KeyType": "HASH"
+        }
+      ],
+      "Projection": {
+        "ProjectionType": "ALL"
+      },
+      "ProvisionedThroughput": {
+        "ReadCapacityUnits": 1,
+        "WriteCapacityUnits": 1
+      }
+    },
+    {
+      "IndexName": "uuid-index",
+      "KeySchema": [
+        {
+          "AttributeName": "uuid",
+          "KeyType": "HASH"
+        }
+      ],
+      "Projection": {
+        "ProjectionType": "ALL"
+      },
+      "ProvisionedThroughput": {
+        "ReadCapacityUnits": 1,
+        "WriteCapacityUnits": 1
+      }
+    },
+    {
+      "IndexName": "flag-index",
+      "KeySchema": [
+        {
+          "AttributeName": "flag",
+          "KeyType": "HASH"
+        }
+      ],
+      "Projection": {
+        "ProjectionType": "ALL"
+      },
+      "ProvisionedThroughput": {
+        "ReadCapacityUnits": 1,
+        "WriteCapacityUnits": 1
+      }
+    }
+  ],
+  "ProvisionedThroughput": {
+    "ReadCapacityUnits": 1,
+    "WriteCapacityUnits": 1
+  }
+}

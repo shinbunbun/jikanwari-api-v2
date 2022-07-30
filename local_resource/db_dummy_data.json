@@ -1,0 +1,40 @@
+{
+  "TimeTable": [
+    {
+      "PutRequest": {
+        "Item": {
+          "ID": {
+            "S": "test_user"
+          },
+          "date": {
+            "S": "2022年07月30日 (土) 0時0分0秒"
+          },
+          "flag": {
+            "S": "25"
+          },
+          "fri": {
+            "S": "friday"
+          },
+          "mon": {
+            "S": "monday"
+          },
+          "sat": {
+            "S": "saturday"
+          },
+          "thu": {
+            "S": "thursday"
+          },
+          "tue": {
+            "S": "tuesday"
+          },
+          "uuid": {
+            "S": "test_id"
+          },
+          "wed": {
+            "S": "wednesday"
+          }
+        }
+      }
+    }
+  ]
+}
