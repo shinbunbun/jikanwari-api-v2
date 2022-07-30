@@ -33,6 +33,8 @@ services:
     command: go test -v ./...
     networks:
       - dynamodb-local-network
+    environment:
+      - GOPATH=
 
 volumes:
   dynamodb-local-data:
