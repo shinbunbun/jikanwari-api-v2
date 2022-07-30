@@ -44,5 +44,6 @@
 	"features": {
 		"docker-in-docker": "latest",
 		"aws-cli": "latest"
-	}
+	},
+	"postCreateCommand": "pip install aws-sam-cli"
 }
