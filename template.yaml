@@ -22,6 +22,14 @@ Globals:
     Runtime: go1.x
     Architectures:
       - x86_64
+  Api:
+    TracingEnabled: True
+    OpenApiVersion: 2.0.0
+    Domain:
+      DomainName: !Ref DomainName
+      CertificateArn: !Ref CertificateArn
+      Route53:
+        HostedZoneId: !Ref HostedZoneId
 
 Resources:
   ApiRole:
@@ -91,13 +99,6 @@ Resources:
         - LoggingLevel: ERROR
           ResourcePath: '/*'
           HttpMethod: '*'
-    TracingEnabled: True
-    OpenApiVersion: 2.0.0
-    Domain:
-      DomainName: !Ref DomainName
-      CertificateArn: !Ref CertificateArn
-      Route53:
-        HostedZoneId: !Ref HostedZoneId
   HelloWorldFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
