@@ -1,0 +1,103 @@
+swagger: '2.0'
+info:
+  description: 時間割Bot API
+  version: 1.0.0
+  title: 時間割Bot API
+paths:
+  /timetable:
+    get:
+      summary: 時間割取得API
+      description: ユーザーの時間割を返します
+      responses:
+        '200':
+          description: 成功時のレスポンス
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+              date:
+                type: string
+              fri:
+                type: string
+              mon:
+                type: string
+              property:
+                type: string
+              sat:
+                type: string
+              thu:
+                type: string
+              tue:
+                type: string
+              wed:
+                type: string
+      security:
+        - LambdaAuthorizer: []
+      x-amazon-apigateway-integration:
+        credentials:
+          'Fn::Sub': '${ApiRole.Arn}'
+        uri:
+          'Fn::Sub': 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${TimeTableGetFunction.Arn}/invocations'
+        passthroughBehavior: when_no_templates
+        httpMethod: POST
+        type: aws_proxy
+      x-amazon-apigateway-cors:
+        allowOrigins:
+          - '*'
+    post:
+      summary: 時間割追加API
+      description: 時間割を追加する時に使うAPI
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              date:
+                type: string
+              fri:
+                type: string
+              mon:
+                type: string
+              property:
+                type: string
+              sat:
+                type: string
+              thu:
+                type: string
+              tue:
+                type: string
+              wed:
+                type: string
+      responses:
+        '200':
+          description: 成功時のレスポンス
+
+      security:
+        - LambdaAuthorizer: []
+      x-amazon-apigateway-integration:
+        credentials:
+          'Fn::Sub': '${ApiRole.Arn}'
+        uri:
+          'Fn::Sub': 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${TimeTablePostFunction.Arn}/invocations'
+        passthroughBehavior: when_no_templates
+        httpMethod: POST
+        type: aws_proxy
+      x-amazon-apigateway-cors:
+        allowOrigins:
+          - '*'
+
+securityDefinitions:
+  LambdaAuthorizer:
+    type: apiKey
+    in: header
+    name: Authorization
+    x-amazon-apigateway-authtype: custom
+    x-amazon-apigateway-authorizer:
+      authorizerUri:
+        'Fn::Sub': 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AuthorizerFunction.Arn}/invocations'
+      authorizerResultTtlInSeconds: 0
+      type: token
+    description: LINEログインのIdToken
