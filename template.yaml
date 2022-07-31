@@ -4,44 +4,115 @@ Description: >
   jikanwari-api-v2
   
   Sample SAM Template for jikanwari-api-v2
+Parameters:
+  DomainName:
+    Type: String
+  CertificateArn:
+    Type: String
+  HostedZoneId:
+    Type: String
+  DynamoDBArn:
+    Type: String
 
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
     Timeout: 5
     Tracing: Active
-  Api:
-    TracingEnabled: True
+    Runtime: go1.x
+    Architectures:
+      - x86_64
 
 Resources:
+  ApiRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - apigateway.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: api-execution-role-policy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - lambda:InvokeFunction
+                Resource:
+                  - Fn::Sub: ${HelloWorldFunction.Arn}
+                  - Fn::Sub: ${TimeTableGetFunction.Arn}
+                  - Fn::Sub: ${TimeTablePostFunction.Arn}
+  FunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Action: "sts:AssumeRole"
+            Principal:
+              Service: lambda.amazonaws.com
+      Policies:
+        - PolicyName: "jikanwari-api-v2-function-poclicy"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - "dynamodb:GetItem"
+                  - "dynamodb:Query"
+                  - "dynamodb:BatchWriteItem"
+                  - "dynamodb:DeleteItem"
+                  - "dynamodb:UpdateItem"
+                  - "dynamodb:PutItem"
+                Resource: !Ref DynamoDBArn
+              - Effect: "Allow"
+                Action:
+                - "logs:CreateLogGroup"
+                - "logs:CreateLogStream"
+                - "logs:PutLogEvents"
+                Resource: "*"
+  Api:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: "jikanwari-api-v2"
+      StageName: prod
+      DefinitionBody:
+        Fn::Transform:
+          Name: AWS::Include
+          Parameters:
+            Location: ./swagger.yml
+      MethodSettings:
+        - LoggingLevel: ERROR
+          ResourcePath: '/*'
+          HttpMethod: '*'
+    TracingEnabled: True
+    OpenApiVersion: 2.0.0
+    Domain:
+      DomainName: !Ref DomainName
+      CertificateArn: !Ref CertificateArn
+      Route53:
+        HostedZoneId: !Ref HostedZoneId
   HelloWorldFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
+      Role: !GetAtt FunctionRole.Arn
       CodeUri: functions/hello-world/
-      Handler: hello-world
-      Runtime: go1.x
-      Architectures:
-        - x86_64
-      Events:
-        CatchAll:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
-          Properties:
-            Path: /hello
-            Method: GET
-      Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
-        Variables:
-          PARAM1: VALUE
-
-Outputs:
-  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
-  # Find out more about other implicit resources you can reference within SAM
-  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
-  HelloWorldAPI:
-    Description: "API Gateway endpoint URL for Prod environment for First Function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
-  HelloWorldFunction:
-    Description: "First Lambda Function ARN"
-    Value: !GetAtt HelloWorldFunction.Arn
-  HelloWorldFunctionIamRole:
-    Description: "Implicit IAM Role created for Hello World function"
-    Value: !GetAtt HelloWorldFunctionRole.Arn
+      Handler: functions/hello-world
+  TimeTableGetFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Role: !GetAtt FunctionRole.Arn
+      CodeUri: functions/timetable-get/
+      Handler: functions/timetable-get
+  TimeTablePostFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Role: !GetAtt FunctionRole.Arn
+      CodeUri: functions/timetable-post/
+      Handler: functions/timetable-post
