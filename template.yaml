@@ -52,7 +52,6 @@ Resources:
                 Action:
                   - lambda:InvokeFunction
                 Resource:
-                  - Fn::Sub: ${HelloWorldFunction.Arn}
                   - Fn::Sub: ${TimeTableGetFunction.Arn}
                   - Fn::Sub: ${TimeTablePostFunction.Arn}
   FunctionRole:
@@ -99,12 +98,6 @@ Resources:
         - LoggingLevel: ERROR
           ResourcePath: '/*'
           HttpMethod: '*'
-  HelloWorldFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
-    Properties:
-      Role: !GetAtt FunctionRole.Arn
-      CodeUri: functions/hello-world/
-      Handler: functions/hello-world
   TimeTableGetFunction:
     Type: AWS::Serverless::Function
     Properties:
