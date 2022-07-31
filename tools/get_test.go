@@ -53,8 +53,6 @@ func TestGetRequest(t *testing.T) {
 					t.Errorf("GetRequest() header = %v, %v, want %v", k, headers[k], tt.args.header)
 				}
 			}
-
-			println(resp)
 		})
 	}
 }
