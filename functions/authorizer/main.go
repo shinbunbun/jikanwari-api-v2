@@ -6,6 +6,7 @@ import (
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/shinbunbun/jikanwari-api-v2/tools"
 )
 
 func handler(_ context.Context, request events.APIGatewayCustomAuthorizerRequest) (events.APIGatewayCustomAuthorizerResponse, error) {
@@ -14,7 +15,10 @@ func handler(_ context.Context, request events.APIGatewayCustomAuthorizerRequest
 		return events.APIGatewayCustomAuthorizerResponse{}, errors.New("Authorization header is empty")
 	}
 
-	err := verify(authZHeader)
+	prodEnv := tools.ProdEnv{}
+	var config tools.Config = &prodEnv
+
+	err := verify(config, authZHeader)
 	if err != nil {
 		return generatePolicy("AllowdUser", "Deny", request.MethodArn), nil
 	}
