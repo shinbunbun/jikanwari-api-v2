@@ -110,3 +110,8 @@ Resources:
       Role: !GetAtt FunctionRole.Arn
       CodeUri: functions/timetable-post/
       Handler: functions/timetable-post
+  AuthorizerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/authorizer
+      Handler: functions/authorizer.lambda_handler
