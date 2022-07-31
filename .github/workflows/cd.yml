@@ -28,4 +28,9 @@ jobs:
       - run: sam build
       - run: "sam deploy \
           --no-confirm-changeset \
-          --no-fail-on-empty-changeset"
+          --no-fail-on-empty-changeset
+          --parameter-overrides \
+          DomainName=${{ secrets.DOMAIN_NAME }} \
+          HostedZoneId=${{ secrets.HOSTED_ZONE_ID }} \
+          CertificateArn=${{ secrets.CERTIFICATE_ARN }} 
+          DynamoDBArn=${{ secrets.DYNAMODB_ARN }}"
