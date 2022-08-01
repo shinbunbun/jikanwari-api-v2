@@ -5,7 +5,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/shinbunbun/jikanwari-api-v2/tools"
+	"github.com/shinbunbun/jikanwari-api-v2/tools/config"
+	"github.com/shinbunbun/jikanwari-api-v2/tools/request"
 )
 
 type VerifyApiResponse struct {
@@ -27,18 +28,18 @@ func parseVerifyApiResponse(resp string) (*VerifyApiResponse, error) {
 	return parsedResp, nil
 }
 
-func verifyClientId(config tools.Config, parsedResp *VerifyApiResponse) error {
+func verifyClientId(config config.Config, parsedResp *VerifyApiResponse) error {
 	if parsedResp.ClientId != config.GetEnv("LINE_CHANNEL_ID") {
 		return fmt.Errorf("Invalid client id: %v", parsedResp.ClientId)
 	}
 	return nil
 }
 
-func verify(config tools.Config, authZHeader string) error {
+func verify(config config.Config, authZHeader string) error {
 
 	idToken := getTokenFromAuthZHeader(authZHeader)
 
-	resp, err := tools.GetRequest("https://api.line.me/oauth2/v2.1/verify?access_token="+idToken, nil)
+	resp, err := request.GetRequest("https://api.line.me/oauth2/v2.1/verify?access_token="+idToken, nil)
 	if err != nil {
 		return fmt.Errorf("Invalid token: %v", err.Error())
 	}
