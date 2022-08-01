@@ -71,3 +71,7 @@ func GetByID(id string, table *dynamo.Table) (*DynamoItem, error) {
 func Put(item *DynamoItem, table *dynamo.Table) error {
 	return table.Put(item).Run()
 }
+
+func DeleteByID(id string, table *dynamo.Table) error {
+	return table.Delete("ID", id).Run()
+}
