@@ -102,7 +102,7 @@ func Test_verifyClientId(t *testing.T) {
 			wantErr: true,
 		},
 	}
-	testEnv := tools.TestEnv{}
+	testEnv := tools.Local{}
 	var config tools.Config = &testEnv
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
