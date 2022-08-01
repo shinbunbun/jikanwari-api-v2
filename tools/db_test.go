@@ -7,10 +7,15 @@ import (
 	"github.com/guregu/dynamo"
 )
 
-func TestGetByIDDataType(t *testing.T) {
+func getTable() *dynamo.Table {
 	local := Local{}
 	var config Config = &local
 	table := config.GetDynamoDB()
+	return &table
+}
+
+func TestGetByIDDataType(t *testing.T) {
+	table := getTable()
 
 	type args struct {
 		id    string
@@ -26,7 +31,7 @@ func TestGetByIDDataType(t *testing.T) {
 			name: "success",
 			args: args{
 				id:    "test_user",
-				table: &table,
+				table: table,
 			},
 			want: &DynamoItem{
 				ID:   "test_user",
@@ -46,7 +51,7 @@ func TestGetByIDDataType(t *testing.T) {
 			name: "error",
 			args: args{
 				id:    "failed_user",
-				table: &table,
+				table: table,
 			},
 			want:    &DynamoItem{},
 			wantErr: true,
