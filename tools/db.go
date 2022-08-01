@@ -67,3 +67,7 @@ func GetByID(id string, table *dynamo.Table) (*DynamoItem, error) {
 	}
 	return &readResult, nil
 }
+
+func Put(item *DynamoItem, table *dynamo.Table) error {
+	return table.Put(item).Run()
+}
