@@ -40,6 +40,16 @@ func TestGetByIDDataType(t *testing.T) {
 				Uuid: "test_id",
 				Wed:  "wednesday",
 			},
+			wantErr: false,
+		},
+		{
+			name: "error",
+			args: args{
+				id:    "failed_user",
+				table: &table,
+			},
+			want:    &DynamoItem{},
+			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
