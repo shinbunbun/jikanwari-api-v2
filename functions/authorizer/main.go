@@ -15,7 +15,7 @@ func handler(_ context.Context, request events.APIGatewayCustomAuthorizerRequest
 		return events.APIGatewayCustomAuthorizerResponse{}, errors.New("Authorization header is empty")
 	}
 
-	prodEnv := tools.ProdEnv{}
+	prodEnv := tools.Prod{}
 	var config tools.Config = &prodEnv
 
 	err := verify(config, authZHeader)
