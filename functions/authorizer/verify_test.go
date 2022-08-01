@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/shinbunbun/jikanwari-api-v2/tools"
+	"github.com/shinbunbun/jikanwari-api-v2/tools/config"
 )
 
 func Test_getTokenFromAuthZHeader(t *testing.T) {
@@ -102,8 +102,8 @@ func Test_verifyClientId(t *testing.T) {
 			wantErr: true,
 		},
 	}
-	testEnv := tools.Local{}
-	var config tools.Config = &testEnv
+	testEnv := config.Local{}
+	var config config.Config = &testEnv
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if err := verifyClientId(config, tt.args.parsedResp); (err != nil) != tt.wantErr {
