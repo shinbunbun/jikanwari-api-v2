@@ -116,6 +116,10 @@ func TestPut(t *testing.T) {
 			if !reflect.DeepEqual(item, tt.args.item) {
 				t.Errorf("GetByID() = %v, want %v", item, tt.args.item)
 			}
+
+			if err := DeleteByID(tt.args.item.ID, tt.args.table); err != nil {
+				t.Errorf("Delete() error = %v", err)
+			}
 		})
 	}
 }
